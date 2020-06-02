@@ -7,6 +7,8 @@ from sprites import *
 from tilemap import *
 
 # HUD functions
+
+
 def draw_player_health(surf, x, y, pct):
     if pct < 0:
         pct = 0
@@ -65,8 +67,10 @@ class Game:
         #     self.mob_img.append(
         #         pg.image.load(path.join(img_folder, imgs)).convert_alpha()
         #     )
-        self.mob_img = pg.image.load(path.join(img_folder, MOB_IMG)).convert_alpha()
-        self.splat = pg.image.load(path.join(img_folder, SPLAT)).convert_alpha()
+        self.mob_img = pg.image.load(
+            path.join(img_folder, MOB_IMG)).convert_alpha()
+        self.splat = pg.image.load(
+            path.join(img_folder, SPLAT)).convert_alpha()
         self.splat = pg.transform.scale(self.splat, (64, 64))
         self.gun_flashes = []
         for img in MUZZLE_FLASHES:
@@ -107,10 +111,12 @@ class Game:
             self.corona_moan_sounds.append(s)
         self.player_hit_sounds = []
         for snd in PLAYER_HIT_SOUNDS:
-            self.player_hit_sounds.append(pg.mixer.Sound(path.join(snd_folder, snd)))
+            self.player_hit_sounds.append(
+                pg.mixer.Sound(path.join(snd_folder, snd)))
         self.corona_hit_sounds = []
         for snd in CORONA_HIT_SOUNDS:
-            self.corona_hit_sounds.append(pg.mixer.Sound(path.join(snd_folder, snd)))
+            self.corona_hit_sounds.append(
+                pg.mixer.Sound(path.join(snd_folder, snd)))
 
     def new(self):
         # initialize all variables and do all the setup for a new game
@@ -143,7 +149,7 @@ class Game:
                 Item(self, obj_center, tile_object.name)
         self.camera = Camera(self.map.width, self.map.height)
         self.draw_debug = False
-        self.paused = False
+        self.paused = True
         self.night = False
         self.effects_sounds["level_start"].play()
 
@@ -181,7 +187,8 @@ class Game:
                 self.effects_sounds["gun_pickup"].play()
                 self.player.weapon = "shotgun"
         # mobs hit player
-        hits = pg.sprite.spritecollide(self.player, self.mobs, False, collide_hit_rect)
+        hits = pg.sprite.spritecollide(
+            self.player, self.mobs, False, collide_hit_rect)
         for hit in hits:
             if random() < 0.7:
                 choice(self.player_hit_sounds).play()
@@ -224,17 +231,20 @@ class Game:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
             if self.draw_debug:
                 pg.draw.rect(
-                    self.screen, CYAN, self.camera.apply_rect(sprite.hit_rect), 1
+                    self.screen, CYAN, self.camera.apply_rect(
+                        sprite.hit_rect), 1
                 )
         if self.draw_debug:
             for wall in self.walls:
-                pg.draw.rect(self.screen, CYAN, self.camera.apply_rect(wall.rect), 1)
+                pg.draw.rect(self.screen, CYAN,
+                             self.camera.apply_rect(wall.rect), 1)
 
         # pg.draw.rect(self.screen, WHITE, self.player.hit_rect, 2)
         if self.night:
             self.render_fog()
         # HUD functions
-        draw_player_health(self.screen, 10, 10, self.player.health / PLAYER_HEALTH)
+        draw_player_health(self.screen, 10, 10,
+                           self.player.health / PLAYER_HEALTH)
         self.draw_text(
             "Corona: {}".format(len(self.mobs)),
             self.hud_font,
@@ -247,13 +257,85 @@ class Game:
         if self.paused:
             self.screen.blit(self.dim_screen, (0, 0))
             self.draw_text(
-                "Paused",
+                "Hint",
                 self.title_font,
                 105,
                 RED,
-                WIDTH / 2,
-                HEIGHT / 2,
-                align="center",
+                WIDTH * 2 / 16,
+                HEIGHT * 3 / 16,
+                align="topleft",
+            )
+            self.draw_text(
+                "↑ | w       = Maju",
+                self.hud_font,
+                30,
+                WHITE,
+                WIDTH * 2 / 16,
+                HEIGHT * 5 / 16,
+                align="topleft",
+            )
+            self.draw_text(
+                "↓ | s         = Mundur",
+                self.hud_font,
+                30,
+                WHITE,
+                WIDTH * 2 / 16,
+                HEIGHT * 6 / 16,
+                align="topleft",
+            )
+            self.draw_text(
+                "→ | d      = Rotasi ke Kanan",
+                self.hud_font,
+                30,
+                WHITE,
+                WIDTH * 2 / 16,
+                HEIGHT * 7 / 16,
+                align="topleft",
+            )
+            self.draw_text(
+                "← | a      = Rotasi ke Kiri",
+                self.hud_font,
+                30,
+                WHITE,
+                WIDTH * 2 / 16,
+                HEIGHT * 8 / 16,
+                align="topleft",
+            )
+            self.draw_text(
+                "SPACE    = Menembak",
+                self.hud_font,
+                30,
+                WHITE,
+                WIDTH * 2 / 16,
+                HEIGHT * 9 / 16,
+                align="topleft",
+            )
+            self.draw_text(
+                "N                = Mode Malam",
+                self.hud_font,
+                30,
+                WHITE,
+                WIDTH * 2 / 16,
+                HEIGHT * 10 / 16,
+                align="topleft",
+            )
+            self.draw_text(
+                "ESC          = QUIT",
+                self.hud_font,
+                30,
+                WHITE,
+                WIDTH * 2 / 16,
+                HEIGHT * 11 / 16,
+                align="topleft",
+            )
+            self.draw_text(
+                "P                = Pause/Play",
+                self.hud_font,
+                30,
+                WHITE,
+                WIDTH * 2 / 16,
+                HEIGHT * 12 / 16,
+                align="topleft",
             )
         pg.display.flip()
 
